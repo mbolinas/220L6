@@ -26,10 +26,15 @@ void LL::addFirst(string s){
 	size++;
 }
 void LL::push(string s){
-	NodeL *n = new NodeL(s);
-	last->next = n;
-	last = n;
-	size++;
+	if(first == NULL){
+		addFirst(s);
+	}
+	else{
+		NodeL *n = new NodeL(s);
+		last->next = n;
+		last = n;
+		size++;
+	}
 }
 void LL::printList(){
 	NodeL *temp = first;
@@ -40,5 +45,11 @@ void LL::printList(){
 	cout << endl;
 }
 void LL::getScore(){
-
+	int count = 0;
+	NodeL *temp = first;
+	while(temp != NULL){
+		count += temp->wscore;
+		temp = temp->next;
+	}
+	score = count;
 }

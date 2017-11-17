@@ -14,6 +14,10 @@
 #include <string>
 
 class Game {
+	friend class LL;
+	friend class AVLTree;
+	friend class NodeL;
+	friend class NodeT;
 	bool AVL;
 	AVLTree *dict;
 	int numletters;

@@ -19,8 +19,8 @@ int main() {
 
 	srand(time(NULL));
 
-	Game *game = new Game("commondict.txt", true);
-	game->startGame();
+	Game *game = new Game("testdict.txt", true);
+	//game->startGame();
 
 	return 0;
 }

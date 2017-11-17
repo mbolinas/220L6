@@ -39,9 +39,15 @@ void AVLTree::addNode(string s, NodeT *r){
 	NodeT *x = new NodeT(s);
 	NodeT *temp = root;
 	bool flag = false;
+	if(root == NULL){
+		root = x;
+		flag = true;
+	}
 	while(!flag){
 		if(s < temp->word){
+			//cout << "Going left of " << temp->word << endl;
 			if(temp->left == NULL){
+				cout << "Inserting left of " << temp->word << endl;
 				temp->left = x;
 				x->parent = temp;
 				flag = true;
@@ -49,7 +55,9 @@ void AVLTree::addNode(string s, NodeT *r){
 			temp = temp->left;
 		}
 		else if(s > temp->word){
+			//cout << "Going right of " << temp->word << endl;
 			if(temp->right == NULL){
+				cout << "Inserting right of " << temp->word << endl;
 				temp->right = x;
 				x->parent = temp;
 				flag = true;
@@ -67,26 +75,36 @@ void AVLTree::addNode(string s, NodeT *r){
 }
 
 void AVLTree::printIO(NodeT *root){
-	if(root != NULL){
+
+	if(root == NULL){
+		return;
+	}
+	else{
 		printIO(root->left);
-		cout << root->word << ", ";
+		cout << root->word << endl;
 		printIO(root->right);
 	}
 }
 
 void AVLTree::printPre(NodeT *root){
-	if(root != NULL){
-		cout << root->word << ", ";
+	if(root == NULL){
+		return;
+	}
+	else{
+		cout << root->word << endl;
 		printIO(root->left);
 		printIO(root->right);
 	}
 }
 
 void AVLTree::printPost(NodeT *root){
-	if(root != NULL){
+	if(root == NULL){
+		return;
+	}
+	else{
 		printIO(root->left);
 		printIO(root->right);
-		cout << root->word << ", ";
+		cout << root->word << endl;
 	}
 }
 
@@ -94,23 +112,42 @@ void AVLTree::adjustHeights(NodeT *n){
 	NodeT *x = n;
 	updateHeights(n);
 
+
 	x = x->parent;
 	while(x != NULL){
+		cout << "rotation root: " << x->word << endl;
 		int diff = getDiff(x);
+		cout << "difference: " << diff << endl;
 
 		if(diff > 1 && n->word < x->left->word){
+			cout << "ll" << endl;
 			x = rotateRight(x);
+			if(x->parent == NULL){
+				root = x;
+			}
 		}
 		if(diff < -1 && n->word > x->right->word){
+			cout << "rr" << endl;
 			x = rotateLeft(x);
+			if(x->parent == NULL){
+				root = x;
+			}
 		}
 		if(diff > 1 && n->word > x->left->word){
-			x->left = rotateLeft(x->left);
+			cout << "lr" << endl;
+			rotateLeft(x->left);
 			x = rotateRight(x);
+			if(x->parent == NULL){
+				root = x;
+			}
 		}
 		if(diff < -1 && n->word < x->right->word){
-			x->right = rotateRight(x->right);
+			cout << "rl" << endl;
+			rotateRight(x->right);
 			x = rotateLeft(x);
+			if(x->parent == NULL){
+				root = x;
+			}
 		}
 		x = x->parent;
 	}
@@ -119,7 +156,18 @@ void AVLTree::adjustHeights(NodeT *n){
 
 void AVLTree::updateHeights(NodeT *n){
 	while(n != NULL){
-		n->height = 1 + max(n->left->height, n->right->height);
+		if(n->left == NULL && n->right == NULL){
+			n->height = 0;
+		}
+		else if(n->left == NULL){
+			n->height = 1 + n->right->height;
+		}
+		else if(n->right == NULL){
+			n->height = 1 + n->left->height;
+		}
+		else{
+			n->height = 1 + max(n->left->height, n->right->height);
+		}
 		n = n->parent;
 	}
 }
@@ -127,11 +175,19 @@ void AVLTree::updateHeights(NodeT *n){
 NodeT *AVLTree::rotateLeft(NodeT *n){
 	NodeT *x = n->right;
 	NodeT *temp = x->left;
+	cout << "switching: " << x->word << " and " << n->word << endl;
 	x->left = n;
 	n->right = temp;
 	x->parent = n->parent;
+	if(n->parent != NULL && n->parent->left != NULL && n->word == n->parent->left->word){
+		x->parent->left = x;
+	}
+	if(n->parent != NULL && n->parent->right != NULL && n->word == n->parent->right->word){
+		x->parent->right = x;
+	}
 	n->parent = x;
 	updateHeights(n);
+	cout << "height of " << n->word << " " << n->height << endl;
 
 	return x;
 
@@ -140,24 +196,35 @@ NodeT *AVLTree::rotateLeft(NodeT *n){
 NodeT *AVLTree::rotateRight(NodeT *n){
 	NodeT *x = n->left;
 	NodeT *temp = x->right;
+	cout << "switching: " << x->word << " and " << n->word << endl;
 	x->right = n;
 	n->left = temp;
 	x->parent = n->parent;
+	if(n->parent != NULL && n->parent->left != NULL && n->word == n->parent->left->word){
+		x->parent->left = x;
+	}
+	if(n->parent != NULL && n->parent->right != NULL && n->word == n->parent->right->word){
+		x->parent->right = x;
+	}
 	n->parent = x;
 	updateHeights(n);
+	cout << "height of " << n->word << " " << n->height << endl;
 
 	return x;
 }
 
 int AVLTree::getDiff(NodeT *n){
 	if(n->left == NULL){
-		return n->right->height;
+		return (n->right->height - (2 * n->right->height)) - 1;
 	}
 	else if(n->right == NULL){
-		return n->left->height;
+		return n->left->height + 1;
 	}
 	else if(n->right == NULL && n->left == NULL){
 		return 0;
 	}
-	return n->left->height - n->right->height;
+	else{
+		cout << n->left->height << endl;
+		return n->left->height - n->right->height;
+	}
 }
