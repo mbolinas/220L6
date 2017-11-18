@@ -1,8 +1,11 @@
 /*
- * LL.cpp
  *
- *  Created on: Nov 17, 2017
- *      Author: Marc
+ *	Marc Bolinas
+ *	Brian Phillips
+ *
+ *	11/19/17
+ *
+ *
  */
 
 #include "LL.hpp"

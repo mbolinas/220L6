@@ -1,8 +1,11 @@
 /*
- * AVLTree.cpp
  *
- *  Created on: Nov 17, 2017
- *      Author: Marc
+ *	Marc Bolinas
+ *	Brian Phillips
+ *
+ *	11/19/17
+ *
+ *
  */
 
 #include "AVLTree.hpp"
@@ -45,9 +48,8 @@ void AVLTree::addNode(string s, NodeT *r){
 	}
 	while(!flag){
 		if(s < temp->word){
-			//cout << "Going left of " << temp->word << endl;
 			if(temp->left == NULL){
-				cout << "Inserting left of " << temp->word << endl;
+				//cout << "Inserting left of " << temp->word << endl;
 				temp->left = x;
 				x->parent = temp;
 				flag = true;
@@ -55,9 +57,8 @@ void AVLTree::addNode(string s, NodeT *r){
 			temp = temp->left;
 		}
 		else if(s > temp->word){
-			//cout << "Going right of " << temp->word << endl;
 			if(temp->right == NULL){
-				cout << "Inserting right of " << temp->word << endl;
+				//cout << "Inserting right of " << temp->word << endl;
 				temp->right = x;
 				x->parent = temp;
 				flag = true;
@@ -92,8 +93,8 @@ void AVLTree::printPre(NodeT *root){
 	}
 	else{
 		cout << root->word << endl;
-		printIO(root->left);
-		printIO(root->right);
+		printPre(root->left);
+		printPre(root->right);
 	}
 }
 
@@ -102,8 +103,8 @@ void AVLTree::printPost(NodeT *root){
 		return;
 	}
 	else{
-		printIO(root->left);
-		printIO(root->right);
+		printPost(root->left);
+		printPost(root->right);
 		cout << root->word << endl;
 	}
 }
@@ -112,29 +113,28 @@ void AVLTree::adjustHeights(NodeT *n){
 	NodeT *x = n;
 	updateHeights(n);
 
-
 	x = x->parent;
 	while(x != NULL){
-		cout << "rotation root: " << x->word << endl;
+		//cout << "rotation root: " << x->word << endl;
 		int diff = getDiff(x);
-		cout << "difference: " << diff << endl;
+		//cout << "difference: " << diff << endl;
 
 		if(diff > 1 && n->word < x->left->word){
-			cout << "ll" << endl;
+			//cout << "ll" << endl;
 			x = rotateRight(x);
 			if(x->parent == NULL){
 				root = x;
 			}
 		}
 		if(diff < -1 && n->word > x->right->word){
-			cout << "rr" << endl;
+			//cout << "rr" << endl;
 			x = rotateLeft(x);
 			if(x->parent == NULL){
 				root = x;
 			}
 		}
 		if(diff > 1 && n->word > x->left->word){
-			cout << "lr" << endl;
+			//cout << "lr" << endl;
 			rotateLeft(x->left);
 			x = rotateRight(x);
 			if(x->parent == NULL){
@@ -142,7 +142,7 @@ void AVLTree::adjustHeights(NodeT *n){
 			}
 		}
 		if(diff < -1 && n->word < x->right->word){
-			cout << "rl" << endl;
+			//cout << "rl" << endl;
 			rotateRight(x->right);
 			x = rotateLeft(x);
 			if(x->parent == NULL){
@@ -175,7 +175,6 @@ void AVLTree::updateHeights(NodeT *n){
 NodeT *AVLTree::rotateLeft(NodeT *n){
 	NodeT *x = n->right;
 	NodeT *temp = x->left;
-	cout << "switching: " << x->word << " and " << n->word << endl;
 	x->left = n;
 	n->right = temp;
 	x->parent = n->parent;
@@ -186,8 +185,10 @@ NodeT *AVLTree::rotateLeft(NodeT *n){
 		x->parent->right = x;
 	}
 	n->parent = x;
+	if(temp != NULL){
+		temp->parent = n;
+	}
 	updateHeights(n);
-	cout << "height of " << n->word << " " << n->height << endl;
 
 	return x;
 
@@ -196,7 +197,6 @@ NodeT *AVLTree::rotateLeft(NodeT *n){
 NodeT *AVLTree::rotateRight(NodeT *n){
 	NodeT *x = n->left;
 	NodeT *temp = x->right;
-	cout << "switching: " << x->word << " and " << n->word << endl;
 	x->right = n;
 	n->left = temp;
 	x->parent = n->parent;
@@ -207,8 +207,10 @@ NodeT *AVLTree::rotateRight(NodeT *n){
 		x->parent->right = x;
 	}
 	n->parent = x;
+	if(temp != NULL){
+		temp->parent = n;
+	}
 	updateHeights(n);
-	cout << "height of " << n->word << " " << n->height << endl;
 
 	return x;
 }
@@ -224,7 +226,6 @@ int AVLTree::getDiff(NodeT *n){
 		return 0;
 	}
 	else{
-		cout << n->left->height << endl;
 		return n->left->height - n->right->height;
 	}
 }

@@ -1,8 +1,11 @@
 /*
- * AVLTree.hpp
  *
- *  Created on: Nov 17, 2017
- *      Author: Marc
+ *	Marc Bolinas
+ *	Brian Phillips
+ *
+ *	11/19/17
+ *
+ *
  */
 
 #ifndef AVLTree_HPP_
